@@ -1,46 +1,42 @@
-import { IRequest } from "./request.interface"
-import RequestTutor from "./request.model"
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { IRequest } from './request.interface'
+import RequestTutor from './request.model'
 
 const sendRequestService = async ({ tutorId, userEmail }: IRequest) => {
-    try {
-        if (!tutorId || !userEmail) {
-          throw new Error("Invalid data provided");
-        }
-    
-        const result = await RequestTutor.create({ tutorId, userEmail });
-        return result;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
-        throw new Error("Error while creating the request: ");
-      }
-
+  try {
+    if (!tutorId || !userEmail) {
+      throw new Error('Invalid data provided')
     }
 
-    const getRequestsForTutor = async (tutorId: string) => {
-      const requests = await RequestTutor.find({ tutorId }).exec();
-      return requests;
-    };
+    const result = await RequestTutor.create({ tutorId, userEmail })
+    return result
+  } catch (err: any) {
+    throw new Error(err.message || 'Failed to send request!')
+  }
+}
 
-    const deleteRequest = async (tutorId: string) => {
-      const requests = await RequestTutor.findOneAndDelete({tutorId});
-      return requests;
-    };
+const getRequestsForTutor = async (tutorId: string) => {
+  const requests = await RequestTutor.find({ tutorId }).exec()
+  return requests
+}
 
-    const getRequestsForStudent = async (userEmail: string) => {
-      try {
-        const requests = await RequestTutor.find({ userEmail }).exec();
-        // console.log(requests, "email");
-        return requests;
-      } catch (error) {
-        console.error("Error fetching requests:", error);
-        throw new Error("Failed to fetch requests for the student.");
-      }
-    };
+const deleteRequest = async (tutorId: string) => {
+  const requests = await RequestTutor.findOneAndDelete({ tutorId })
+  return requests
+}
+
+const getRequestsForStudent = async (userEmail: string) => {
+  try {
+    const requests = await RequestTutor.find({ userEmail }).exec()
+    return requests
+  } catch (err: any) {
+    throw new Error(err.message || 'Failed to get requests!')
+  }
+}
 
 export const requestService = {
-    sendRequestService,
-    getRequestsForTutor,
-    getRequestsForStudent,
-    deleteRequest
+  sendRequestService,
+  getRequestsForTutor,
+  getRequestsForStudent,
+  deleteRequest,
 }

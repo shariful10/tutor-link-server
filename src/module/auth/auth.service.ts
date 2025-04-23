@@ -1,20 +1,15 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import User from '../user/user.model'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import { IUser } from '../user/user.interface'
+import User from '../user/user.model'
 
-
-const regiserIntoDb = async (payload: IUser) => {
+const registerIntoDb = async (payload: IUser) => {
   const result = await User.create(payload)
   return result
 }
 
 const loginIntoDb = async (payload: { email: string; password: string }) => {
-  // console.log(payload);
-
-  const user = await User.findOne({email:payload?.email}).select('+password')
-  // const user = await User.findOne({ email: payload?.email })
-  console.log(user, "user dataaaaa");
+  const user = await User.findOne({ email: payload?.email }).select('+password')
 
   if (!user) {
     throw new Error('user is not found')
@@ -38,17 +33,21 @@ const loginIntoDb = async (payload: { email: string; password: string }) => {
   const jwtPayload = {
     email: user?.email,
     role: user?.role,
-    id:user.id
+    id: user.id,
   }
 
-  const token = jwt.sign(jwtPayload, 'secrect', { expiresIn: '1d' })
-  const veryfiUser = { neme: user?.name, email: user?.email, role: user?.role , id:user?.id }
+  const token = jwt.sign(jwtPayload, 'secret', { expiresIn: '1d' })
+  const veryfiUser = {
+    neme: user?.name,
+    email: user?.email,
+    role: user?.role,
+    id: user?.id,
+  }
 
   return { token, veryfiUser }
 }
 
-
 export const AuthServer = {
-  regiserIntoDb,
+  registerIntoDb,
   loginIntoDb,
 }

@@ -11,8 +11,8 @@ const getUser = async () => {
   return result
 }
 
-const getSingleUser = async (id: string) => {
-  const result = await User.findById(id)
+const getSingleUser = async (userId: string) => {
+  const result = await User.findById(userId)
   return result
 }
 

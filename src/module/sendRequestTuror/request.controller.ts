@@ -1,103 +1,96 @@
-import { Request, Response } from "express"
-import { requestService } from "./request.service"
-import RequestTutor from "./request.model"
+import { Request, Response } from 'express'
+import RequestTutor from './request.model'
+import { requestService } from './request.service'
 
 const createRequest = async (req: Request, res: Response) => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { tutorId, userEmail } = req.body;
-    // console.log(tutorId)
+    const { userEmail } = req.body
 
-    const existingRequest = await RequestTutor.findOne({ userEmail });
+    const existingRequest = await RequestTutor.findOne({ userEmail })
     if (existingRequest) {
-       throw new Error("user all ready request")
+      throw new Error('user all ready request')
     }
     const result = await requestService.sendRequestService(req.body)
 
     res.json({
       status: true,
-      message: 'Request created successfully',
+      message: 'Request is created successfully!',
       data: result,
     })
-  } catch (error) {
+  } catch (err) {
     res.json({
       status: false,
       message: 'Something went wrong',
-      error,
+      err,
     })
   }
 }
 
 const getRequestsByTutorId = async (req: Request, res: Response) => {
   try {
-    const tutorId = req.params.tutorId;
-    const requests = await requestService.getRequestsForTutor(tutorId);
+    const tutorId = req.params.tutorId
+    const requests = await requestService.getRequestsForTutor(tutorId)
 
     if (!requests || requests.length === 0) {
-       res.json({
+      res.json({
         status: false,
-        message: "No requests found for this tutor.",
-      });
+        message: 'No requests found for this tutor.',
+      })
     }
     res.json({
       status: true,
-      message: "Requests fetched successfully",
+      message: 'Requests fetched successfully',
       data: requests,
-    });
-  } catch (error) {
+    })
+  } catch (err) {
     res.json({
       status: false,
       message: 'Something went wrong',
-      error,
-    });
+      err,
+    })
   }
-};
+}
 
-const getRequestsDeleteByid = async (req: Request, res: Response) => {
+const getRequestsDeleteById = async (req: Request, res: Response) => {
   try {
-    const tutorId = req.params.tutorId;
-    console.log(tutorId)
-    const requests = await requestService.deleteRequest(tutorId);
-console.log(requests )
+    const tutorId = req.params.tutorId
+    const requests = await requestService.deleteRequest(tutorId)
 
     res.json({
       status: true,
-      message: "Requests fetched successfully",
+      message: 'Requests fetched successfully',
       data: requests,
-    });
-  } catch (error) {
+    })
+  } catch (err) {
     res.json({
       status: false,
       message: 'Something went wrong',
-      error,
-    });
+      err,
+    })
   }
-};
+}
 
 const getRequestsByStudentEmail = async (req: Request, res: Response) => {
   try {
-    const { userEmail } = req.params;
-    // console.log(userEmail)
-    const requests = await requestService.getRequestsForStudent(userEmail);
+    const { userEmail } = req.params
+    const requests = await requestService.getRequestsForStudent(userEmail)
     res.json({
       status: true,
-      message: "Requests fetched successfully",
+      message: 'Requests fetched successfully',
       data: requests,
-    });
-  } catch (error) {
+    })
+  } catch (err) {
     res.json({
       status: false,
       message: 'Something went wrong',
-      error,
-    });
+      err,
+    })
   }
-};
-
+}
 
 export const requestController = {
   createRequest,
   getRequestsByTutorId,
   getRequestsByStudentEmail,
-  getRequestsDeleteByid
-};
-
+  getRequestsDeleteById,
+}

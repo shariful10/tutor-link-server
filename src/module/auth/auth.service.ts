@@ -31,14 +31,16 @@ const loginIntoDb = async (payload: { email: string; password: string }) => {
 
   //create token and sent to the  client
   const jwtPayload = {
+    name: user?.name,
     email: user?.email,
     role: user?.role,
     id: user.id,
   }
 
   const token = jwt.sign(jwtPayload, 'secret', { expiresIn: '1d' })
+
   const veryfiUser = {
-    neme: user?.name,
+    name: user?.name,
     email: user?.email,
     role: user?.role,
     id: user?.id,
